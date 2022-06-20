@@ -57,7 +57,6 @@ module.exports = function (app) {
         if (filter[key] === undefined) delete filter[key];
       }
 
-      if (filter['_id'] !== undefined) filter['_id'] = Number(filter['_id']);
       if (filter['open'] !== undefined) filter['open'] = Boolean(filter['open']);
 
       let issues = findIssues(project, filter);
@@ -69,7 +68,7 @@ module.exports = function (app) {
       let date = new Date();
 
       let issue = {
-        _id: idi++,
+        _id: (idi++).toString(),
         issue_title: req.body.issue_title || '',
         issue_text: req.body.issue_text || '',
         created_on: date.toISOString(),
@@ -99,11 +98,10 @@ module.exports = function (app) {
       let project = req.params.project;
 
       let id = req.body._id;
-      if (id === undefined) {
+      if (id === undefined || id === '') {
         res.json({ error: 'missing _id' });
         return;
       }
-      id = Number(id);
 
       let issue = findIssues(project, { _id: id });
       if (issue.length != 1) {
@@ -135,6 +133,8 @@ module.exports = function (app) {
         issue[key] = toUpdate[key];
       }
 
+      issue['updated_on'] = (new Date()).toISOString();
+
       res.json({ result: 'successfully updated', _id: id });
     })
     
@@ -146,7 +146,6 @@ module.exports = function (app) {
         res.json({ error: 'missing _id' });
         return;
       }
-      id = Number(id);
 
       let issue_index = indexOfId(project, id);
       if (issue_index < 0) {

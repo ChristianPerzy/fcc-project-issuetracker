@@ -121,7 +121,7 @@ suite('Functional Tests', function() {
 
     test('update one field', (done) => {
         const toUpdate = {
-            _id: 0,
+            _id: '0',
             status_text: 'ok'
         };
 
@@ -131,14 +131,14 @@ suite('Functional Tests', function() {
             .end((err, res) => {
                 assert.equal(res.status, 200);
                 let response = JSON.parse(res.text);
-                assert.deepEqual(response, { result: 'successfully updated', _id: 0 });
+                assert.deepEqual(response, { result: 'successfully updated', _id: '0' });
                 done();
             });
     });
 
     test('update multiple fields', (done) => {
         const toUpdate = {
-            _id: 1,
+            _id: '1',
             assigned_to: 'him',
             status_text: 'no change'
         };
@@ -149,7 +149,7 @@ suite('Functional Tests', function() {
             .end((err, res) => {
                 assert.equal(res.status, 200);
                 let response = JSON.parse(res.text);
-                assert.deepEqual(response, { result: 'successfully updated', _id: 1 });
+                assert.deepEqual(response, { result: 'successfully updated', _id: '1' });
                 done();
             });
     });
@@ -172,7 +172,7 @@ suite('Functional Tests', function() {
 
     test('update with no fields to update', (done) => {
         const toUpdate = {
-            _id: 1,
+            _id: '1',
             open: false
         };
 
@@ -182,14 +182,14 @@ suite('Functional Tests', function() {
             .end((err, res) => {
                 assert.equal(res.status, 200);
                 let response = JSON.parse(res.text);
-                assert.deepEqual(response, { error: 'no update field(s) sent', _id: 1 });
+                assert.deepEqual(response, { error: 'no update field(s) sent', _id: '1' });
                 done();
             });
     });
 
     test('update with invalid id', (done) => {
         const toUpdate = {
-            _id: 1337,
+            _id: '1337',
             open: false
         };
 
@@ -199,7 +199,7 @@ suite('Functional Tests', function() {
             .end((err, res) => {
                 assert.equal(res.status, 200);
                 let response = JSON.parse(res.text);
-                assert.deepEqual(response, { error: 'could not update', _id: 1337 });
+                assert.deepEqual(response, { error: 'could not update', _id: '1337' });
                 done();
             });
     });
@@ -207,11 +207,11 @@ suite('Functional Tests', function() {
     test('delete an issue', (done) => {
         chai.request(server)
             .delete('/api/issues/tests')
-            .send({ _id: 0 })
+            .send({ _id: '0' })
             .end((err, res) => {
                 assert.equal(res.status, 200);
                 let response = JSON.parse(res.text);
-                assert.deepEqual(response, { result: 'successfully deleted', _id: 0 });
+                assert.deepEqual(response, { result: 'successfully deleted', _id: '0' });
                 done();
             });
     });
@@ -219,11 +219,11 @@ suite('Functional Tests', function() {
     test('delete an issue with an invalid id', (done) => {
         chai.request(server)
             .delete('/api/issues/tests')
-            .send({ _id: 1337 })
+            .send({ _id: '1337' })
             .end((err, res) => {
                 assert.equal(res.status, 200);
                 let response = JSON.parse(res.text);
-                assert.deepEqual(response, { error: 'could not delete', _id: 1337 });
+                assert.deepEqual(response, { error: 'could not delete', _id: '1337' });
                 done();
             });
     });
