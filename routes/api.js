@@ -116,13 +116,12 @@ module.exports = function (app) {
         created_by: req.body.created_by,
         assigned_to: req.body.assigned_to,
         status_text: req.body.status_text,
-        open: !Boolean(req.body.open)
       };
 
       for (let key of Object.keys(toUpdate)) {
         if (toUpdate[key] === undefined || toUpdate[key] === '') delete toUpdate[key];
       }
-      if (toUpdate['open'] === true) delete toUpdate['open'];
+      if (req.body.open === 'false') toUpdate['open'] = false;
 
       if (Object.keys(toUpdate).length == 0) {
         res.json({ error: 'no update field(s) sent', _id: id });
