@@ -47,9 +47,11 @@ app.use(function(req, res, next) {
 });
 
 //Start our server and tests!
-const listener = app.listen(process.env.PORT || 3000, function () {
+const test_mode = process.env.NODE_ENV || process.env['MODE_ENV']; // for replit env
+
+const listener = app.listen(process.env.PORT || process.env['PORT'] || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
-  if(process.env.NODE_ENV==='test') {
+  if(test_mode==='test') {
     console.log('Running Tests...');
     setTimeout(function () {
       try {
