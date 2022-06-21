@@ -190,7 +190,7 @@ suite('Functional Tests', function() {
     test('update with invalid id', (done) => {
         const toUpdate = {
             _id: '1337',
-            open: false
+            issue_title: 'YOU WON\'T BELIVE WHAT I FOUND!!!'
         };
 
         chai.request(server)

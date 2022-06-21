@@ -41,22 +41,7 @@ module.exports = function (app) {
     .get(function (req, res){
       let project = req.params.project;
 
-      let filter = {
-        _id: req.query._id,
-        issue_title: req.query.issue_title,
-        issue_text: req.query.issue_text,
-        created_on: req.query.created_on,
-        updated_on: req.query.updated_on,
-        created_by: req.query.created_by,
-        assigned_to: req.query.assigned_to,
-        open: req.query.open,
-        status_text: req.query.status_text
-      };
-
-      for (let key of Object.keys(filter)) {
-        if (filter[key] === undefined) delete filter[key];
-      }
-
+      let filter = req.query;
       if (filter['open'] !== undefined) filter['open'] = Boolean(filter['open']);
 
       let issues = findIssues(project, filter);
@@ -65,6 +50,8 @@ module.exports = function (app) {
     
     .post(function (req, res){
       let project = req.params.project;
+
+      // build issue
       let date = new Date();
 
       let issue = {
@@ -79,6 +66,7 @@ module.exports = function (app) {
         status_text: req.body.status_text || ''
       };
 
+      // check required fields
       if (issue['issue_title'] === '' ||
           issue['issue_text'] === '' ||
           issue['created_by'] == '') {
@@ -86,6 +74,7 @@ module.exports = function (app) {
         return;
       }
 
+      // add issue (and project if necessary)
       if (projects[project] === undefined) {
         projects[project] = [];
       }
@@ -97,19 +86,14 @@ module.exports = function (app) {
     .put(function (req, res){
       let project = req.params.project;
 
+      // check id
       let id = req.body._id;
       if (id === undefined || id === '') {
         res.json({ error: 'missing _id' });
         return;
       }
 
-      let issue = findIssues(project, { _id: id });
-      if (issue.length != 1) {
-        res.json({ error: 'could not update', _id: id });
-        return;
-      }
-      issue = issue[0];
-
+      // get what to update
       let toUpdate = {
         issue_title: req.body.issue_title,
         issue_text: req.body.issue_text,
@@ -128,6 +112,15 @@ module.exports = function (app) {
         return;
       }
 
+      // search issue to update
+      let issue = findIssues(project, { _id: id });
+      if (issue.length != 1) {
+        res.json({ error: 'could not update', _id: id });
+        return;
+      }
+      issue = issue[0];
+
+      // update issue
       for (let key of Object.keys(toUpdate)) {
         issue[key] = toUpdate[key];
       }
@@ -140,18 +133,21 @@ module.exports = function (app) {
     .delete(function (req, res){
       let project = req.params.project;
 
+      // check id
       let id = req.body._id;
       if (id === undefined) {
         res.json({ error: 'missing _id' });
         return;
       }
 
+      // find issue id
       let issue_index = indexOfId(project, id);
       if (issue_index < 0) {
         res.json({ error: 'could not delete', _id: id });
         return;
       }
 
+      // delete issue
       projects[project].splice(issue_index,1);
 
       res.json({ result: 'successfully deleted', _id: id });
